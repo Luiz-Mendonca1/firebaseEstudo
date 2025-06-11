@@ -3,7 +3,7 @@ import { db } from "./firebaseconect";
 import './App.css'
 import { useEffect, useState } from "react";
 import {addDoc, collection, deleteDoc, doc, getDoc, 
-  getDocs, setDoc, updateDoc, onSnapshot} from 'firebase/firestore'
+  getDocs, setDoc, updateDoc, onSnapshot, snap} from 'firebase/firestore'
 
 function App() {
 const [titulo, setTitulo] = useState('')
@@ -13,10 +13,10 @@ const [idPost, setIdPost] = useState('')
 
 useEffect(()=>{
   async function loadPosts() {
-    const unsub = onSnapshot(collection(db, 'posts'), ()=>{
+    const unsub = onSnapshot(collection(db, 'posts'), (snapshot)=>{
       let listaPost = []
 
-        onSnapshot.forEach((doc)=>{
+         snapshot.forEach((doc)=>{
           listaPost.push({
             id: doc.id,
             titulo: doc.data().titulo,
