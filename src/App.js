@@ -2,7 +2,7 @@
 import { db } from "./firebaseconect";
 import './App.css'
 import { useState } from "react";
-import {addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore'
+import {addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore'
 
 function App() {
 const [titulo, setTitulo] = useState('')
@@ -88,6 +88,11 @@ const [idPost, setIdPost] = useState('')
     console.log('erro no update')
   })
 }
+
+  async function excluirPost(id){
+    const docRef = doc(db, 'posts', id)
+    await deleteDoc(docRef)
+  }
   return (
     <div>
       <h1>ReactJS + Firebase :)</h1>
@@ -124,6 +129,7 @@ const [idPost, setIdPost] = useState('')
                 <strong>ID: {post.id}</strong><br/>
                 <span>titulo: {post.titulo}</span> <br/>
                 <span>autor: {post.autor}</span> <br/>
+                <button onClick={()=> excluirPost(post.id)}>Excluir</button>
               </li>
             )
           })}
