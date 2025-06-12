@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {addDoc, collection, deleteDoc, doc, getDoc, 
   getDocs, setDoc, updateDoc, onSnapshot, snap,
   } from 'firebase/firestore'
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 function App() {
 const [titulo, setTitulo] = useState('')
@@ -14,6 +14,8 @@ const [posts, setPosts] = useState([])
 const [idPost, setIdPost] = useState('')
 const [email, setEmail] = useState('')
 const [senha, setSenha] = useState('')
+const [user, setUser] = useState(false)
+const [userDatail, setUserDatail] = useState({})
 
 useEffect(()=>{
   async function loadPosts() {
@@ -135,9 +137,44 @@ useEffect(()=>{
   })
 }
 
+  async function logarUsuario(){
+    await signInWithEmailAndPassword(auth, email, senha)
+    .then((value)=>{
+      console.log('func')
+      console.log(value)
+
+      setUserDatail({
+        uid: value.user.uid,
+        email: value.user.email
+      })
+      setUser(true)
+
+      setEmail('')
+      setSenha('')
+
+    })
+    .catch(()=>{
+    console.log('não func')
+    })
+  }
+
+  function fazerLogout(){
+    console.log('logout')
+    setUserDatail([])
+    setUser(false)
+  }
+
   return (
     <div>
       <h1>ReactJS + Firebase :)</h1>
+
+    {user && (
+      <div> 
+        <strong>Bem vindo - Vc esta logado</strong> <br/>
+        <span>ID: {userDatail.uid} - Email: {userDatail.email}</span> <br/>
+        <button onClick={fazerLogout}>Logout</button>
+      <br/><br/>
+    </div>)}
 
       <div className="container">
         <h2>Usuarios</h2>
@@ -153,6 +190,7 @@ useEffect(()=>{
         placeholder="Digite sua senha"/>
 
         <button onClick={novoUsuario}>Cadastrar</button>
+        <button onClick={logarUsuario}>Fazer login</button>
       </div>
 
       <br/><br/>
